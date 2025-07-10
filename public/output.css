@@ -765,17 +765,8 @@
   .bg-gray-300 {
     background-color: var(--color-gray-300);
   }
-  .bg-gray-500 {
-    background-color: var(--color-gray-500);
-  }
-  .bg-gray-600 {
-    background-color: var(--color-gray-600);
-  }
   .bg-green-700 {
     background-color: var(--color-green-700);
-  }
-  .bg-green-800 {
-    background-color: var(--color-green-800);
   }
   .bg-green-900 {
     background-color: var(--color-green-900);
@@ -798,23 +789,8 @@
   .bg-red-500 {
     background-color: var(--color-red-500);
   }
-  .bg-red-600 {
-    background-color: var(--color-red-600);
-  }
-  .bg-rose-600 {
-    background-color: var(--color-rose-600);
-  }
-  .bg-sky-500 {
-    background-color: var(--color-sky-500);
-  }
   .bg-white {
     background-color: var(--color-white);
-  }
-  .bg-zinc-600\/90 {
-    background-color: color-mix(in srgb, oklch(44.2% 0.017 285.786) 90%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-zinc-600) 90%, transparent);
-    }
   }
   .fill-white {
     fill: var(--color-white);
