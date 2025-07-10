@@ -1,6 +1,5 @@
 AIM: to design responsively and adding mobile products to cart gatting totals and final review of placing the order of few products
 
-set files are copied version of original file back up purpose 
 
 
 this webpage is desigened for home page and ensuring responsive design 
