@@ -16,7 +16,7 @@ const baseHeaderCode = `
     </svg>
 
     <a href="">
-        <img src="/images/logo.png" alt="Flipkart" class="h-8 w-auto hover:cursor-pointer" />
+        <img src="https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png" alt="Flipkart" class="h-8 w-auto hover:cursor-pointer" />
     </a>
     
     <div class="hidden sm:flex items-center flex-1 max-w-xl mx-4 search-bar-main">

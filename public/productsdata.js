@@ -2,7 +2,7 @@
 //saving data of multiple products inside array which stores multiple items
 export const products = [{
   id: "29893-99283-hue7937-988",
-  image: '/images/m 6.png',
+  image: 'https://s3.ap-south-1.amazonaws.com/happimobiles/product-main-images/happi_mobiles_iphone_16_pro_White_Titanium_main_image.webp',
   name: 'Apple iPhone 16 (Straight light, 128 GB)',
   rating: 4.6,
   review: 19372,
@@ -21,7 +21,7 @@ export const products = [{
 
 }, {
    id: "29893-98983-h65937-988",
-  image: '/images/m 8.png',
+  image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDkjRrg61l1pp2N222AAZWWKxFEvxk7h-Qww&s',
   name: 'Apple iPhone 16 (Black pantham, 256 GB)',
   rating: 4.5,
   review: 15950,
@@ -40,7 +40,7 @@ export const products = [{
 
 },{
    id: "26753-99883-hu87937-988",
-   image: '/images/m 9.png',
+   image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzxw626FEmSz-oo5wP32gwXeCVUncTUjYriQ&s',
   name: 'VIVO V50 series (Blue sky , 128 GB (8 GB RAM))',
   rating: 4.4,
   review: 24534,
@@ -59,7 +59,7 @@ export const products = [{
 
 }, {
    id: "298793-967583-hu46f37-988",
-  image: '/images/m 10.png',
+  image: 'https://m.media-amazon.com/images/I/717Q2swzhBL._UF1000,1000_QL80_.jpg',
   name: 'Samsung Galaxy S24 Ultra (Titanium Gray, 256 GB)',
   rating: 4.5,
   review: 62736,
