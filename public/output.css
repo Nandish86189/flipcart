@@ -302,6 +302,24 @@
   .row-span-1 {
     grid-row: span 1 / span 1;
   }
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
   .m-\[5px\] {
     margin: 5px;
   }
@@ -552,9 +570,6 @@
   .h-full {
     height: 100%;
   }
-  .max-h-96 {
-    max-height: calc(var(--spacing) * 96);
-  }
   .min-h-screen {
     min-height: 100vh;
   }
@@ -784,9 +799,6 @@
   .overflow-x-scroll {
     overflow-x: scroll;
   }
-  .overflow-y-auto {
-    overflow-y: auto;
-  }
   .scroll-smooth {
     scroll-behavior: smooth;
   }
@@ -890,9 +902,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-orange-500) 90%, transparent);
     }
-  }
-  .bg-red-300 {
-    background-color: var(--color-red-300);
   }
   .bg-red-400 {
     background-color: var(--color-red-400);

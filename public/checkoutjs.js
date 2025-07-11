@@ -1,4 +1,4 @@
-import { cart } from "./cart.js";
+import { cart ,removefromcart } from "./cart.js";
 import{products} from "./productsdata.js";
 
 let cartsummary = '';
@@ -13,9 +13,9 @@ cart.forEach((item) => {
         }
     });
 
-    console.log(mactchproduct);
+    // console.log(mactchproduct);
     cartsummary += `
-        <div class="bg-white p-4 shadow-sm rounded-sm">
+        <div class="bg-white p-4 shadow-sm rounded-sm cart-item-${mactchproduct.id}">
             <div class="flex flex-col sm:flex-row items-start mb-6 border-b pb-4 last:border-b-0">
                 <img src="${mactchproduct.image}" alt="${mactchproduct.name}" class="w-24 h-24 object-contain mr-4 mb-2 sm:mb-0">
                 <div class="flex-1">
@@ -36,7 +36,7 @@ cart.forEach((item) => {
                             <button class="border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center text-lg font-medium text-gray-600">+</button>
                         </div>
                         <div class="flex space-x-4 text-sm font-semibold">
-                            <button class="text-gray-700 hover:text-blue-600 small-text">REMOVE</button>
+                            <button class="text-gray-700 hover:text-blue-600 small-text remove-cart-item " data-product-id=${mactchproduct.id}>REMOVE</button>
                         </div>
                     </div>
                 </div>
@@ -46,4 +46,16 @@ cart.forEach((item) => {
 });
 
 document.querySelector('.order-summary').innerHTML = cartsummary;
-console.log(cartsummary);
+// console.log(cartsummary);
+
+document.querySelectorAll('.remove-cart-item').forEach((link)=>{
+    link.addEventListener('click',()=>{
+        const productId=link.dataset.productId;
+        removefromcart(productId);
+        // console.log(cart);
+        const container=document.querySelector(`.cart-item-${productId}`);
+        container.remove();
+    });
+});
+
+
