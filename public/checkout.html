@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Page</title>
+    <link rel="stylesheet" href="output.css">
+    <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+      
+    </style>
+</head>
+
+<body>
+    <header class="sticky top-0 z-50 w-full bg-white flex items-center justify-between p-4 shadow-md top-navigator">
+    </header>
+
+    <section class="bg-gray-100 min-h-screen py-2 px-1 sm:px-2 md:px-3 lg:px-4">
+        <div class="max-w-full mx-auto flex flex-col lg:flex-row gap-4">
+
+            <div class="flex-1 space-y-4 added-to-bill">
+                <div class="bg-white p-4 shadow-sm rounded-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-700">From Saved Addresses</h2>
+                        <button class="text-blue-600 font-medium text-sm hover:underline">Enter Delivery Pincode</button>
+                    </div>
+                    <p class="text-gray-500 text-sm">No saved address found. Please enter a pincode.</p>
+                </div>
+
+                <div class="order-summary space-y-4"> 
+                    </div>
+
+                <div class="bg-white p-4 shadow-sm rounded-sm flex justify-end">
+                    <button class="bg-orange-500 text-white font-medium py-3 px-8 rounded-sm hover:bg-orange-600">PLACE ORDER</button>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-96">
+                <div class="bg-white p-4 shadow-sm rounded-sm">
+                    <h2 class="text-lg font-semibold text-gray-700 border-b pb-3 mb-3">PRICE DETAILS</h2>
+                    <div class="space-y-2 text-gray-700">
+                        <div class="flex justify-between items-center">
+                            <span>Price (3 items) <span class="text-gray-400 text-xs ml-1">(?)</span></span>
+                            <span>₹1,82,995</span>
+                        </div>
+                        <div class="flex justify-between items-center text-green-600">
+                            <span>Discount</span>
+                            <span>- ₹40,000</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Protect Promise Fee <span class="text-gray-400 text-xs ml-1">(?)</span></span>
+                            <span>₹305</span>
+                        </div>
+                        <div class="flex justify-between items-center font-bold text-lg pt-2 border-t mt-2">
+                            <span>Total Amount</span>
+                            <span>₹1,43,300</span>
+                        </div>
+                    </div>
+                    <p class="text-green-600 font-semibold text-sm mt-4">You will save ₹39,695 on this order</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="navigator.js"></script>
+    <script type="module" src="checkoutjs.js"></script>
+</body>
+</html>

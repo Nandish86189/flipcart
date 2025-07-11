@@ -270,16 +270,20 @@
         </div>
     </div>
 
-<script type="module" src="navigator.js"></script> 
-
-<script src="cart.js">  //first this cloads </script>
-
-<script src="productsdata.js">  //second this cloads </script>
+<script type="module" src="navigator.js"></script>
 
 
-    <script type="module">
-    
-        import {show} from './mobilejs.js';
+<!-- <script src="cart.js">  //first this cloads  making to load from the module </script> --> 
+
+
+<!-- <script src="productsdata.js">  //second this cloads </script> -->
+
+
+    <script type="module" src="./mobilejs.js">
+        
+            import {show} from './mobilejs.js';
+
+        
         show(); 
             </script>
 

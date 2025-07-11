@@ -1,15 +1,16 @@
 // fetching the mobile page location
 export function loadthemobile() {
     const f = document.getElementById('mobile');
-    f.addEventListener('click', () => {
-        window.location.href = './mobile.html';
-    });
+    if (f) { // Always good to check if the element exists
+        f.addEventListener('click', () => {
+            window.location.href = './mobile.html';
+        });
+    }
 }
 
 // header section of all pages
-const topNavigators = document.querySelectorAll('.top-navigator');
-
-const headerCode = `
+// We'll define a base header code that applies to all pages
+const baseHeaderCode = `
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7 sm:hidden hover:cursor-pointer header-icon">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
     </svg>
@@ -18,14 +19,14 @@ const headerCode = `
         <img src="/images/logo.png" alt="Flipkart" class="h-8 w-auto hover:cursor-pointer" />
     </a>
     
-    <div class="hidden sm:flex items-center flex-1 max-w-xl mx-4">
+    <div class="hidden sm:flex items-center flex-1 max-w-xl mx-4 search-bar-main">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500 absolute ml-3 hover:cursor-pointer header-icon">
             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
         <input type="search" class="bg-gray-100 w-full h-10 pl-10 rounded-md placeholder:text-gray-500" placeholder="Search for products, brands and more">
     </div>
 
-    <div class="group relative ml-52">
+    <div class="group relative ml-52 remove-at-checkout">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7 absolute -ml-6 mb-1 sm:hidden hover:cursor-pointer header-icon">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
         </svg>
@@ -38,7 +39,7 @@ const headerCode = `
                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
             
-            <div class="w-72 h-fit pb-2.5 top-10 hover:shadow-xl hover:shadow-gray-500 bg-white absolute mt-0.5 right-1/4 z-[100] hidden shadow-lg border border-gray-200 md:left-0 md:translate-x-0 group-hover:hidden sm:group-hover:block md:group-hover:block lg:group-hover:block">
+            <div class="w-72 h-fit pb-2.5 top-10 hover:shadow-xl hover:shadow-gray-500 bg-white absolute mt-0.5 right-1/4 z-[100] hidden shadow-lg border border-gray-200 md:left-0 md:translate-x0 group-hover:hidden sm:group-hover:block md:group-hover:block lg:group-hover:block">
                 <p class="whitespace-pre-wrap text-xl m-[5px] text-black mt-2 ml-4">New customer? <a class="text-blue-500 hover:scale-95 font-bold ml-8 hover:cursor-pointer">Sign Up</a></p>
                 <hr class="border-gray-300 mt-3" />
                 <div class="flex flex-col justify-between items-start">
@@ -88,21 +89,22 @@ const headerCode = `
             </div>
         </div>
     </div>
+    <a href="./checkout.html" class="remove-at-checkout">
+        <div class="flex items-center ml-4 relative hover:cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 -ml-3 sm:-ml-0 header-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+            <span class="hidden md:inline ml-2 header-text">Cart</span>
+            <span class="absolute -top-2 sm:ml-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-quantity">0</span>
+        </div>
+    </a>
 
-    <div class="flex items-center ml-4 relative hover:cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 -ml-3 sm:-ml-0 header-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-        </svg>
-        <span class="hidden md:inline ml-2  header-text">Cart</span>
-        <span class="absolute -top-2 sm:ml-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-quantity">1</span>
-    </div>
-
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7 relative ml-3 hidden sm:block sm:size-6 header-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7 relative ml-3 hidden sm:block sm:size-6 header-icon remove-at-checkout">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
     </svg>
-    <a href="" class="relative text-xl ml-1 hidden md:block header-text">Become a seller</a>
+    <a href="" class="relative text-xl ml-1 hidden md:block header-text remove-at-checkout">Become a seller</a>
 
-    <div class="relative group hover:cursor-pointer">
+    <div class="relative group hover:cursor-pointer remove-at-checkout">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hidden sm:block ml-3 hover:ring hover:ring-gray-200 hover:rounded-sm hover:ring-offset-4 hover:bg-gray-100 hover:ring-offset-gray-100 sm:size-5 header-icon">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
         </svg>
@@ -138,27 +140,29 @@ const headerCode = `
     </div>
 `;
 
+// Fetching all elements with the class 'top-navigator'
+const topNavigators = document.querySelectorAll('.top-navigator');
+
+// Loop through each top-navigator and insert the base header code
 topNavigators.forEach(navigator => {
-    navigator.insertAdjacentHTML('afterbegin', headerCode);
+    navigator.insertAdjacentHTML('afterbegin', baseHeaderCode);
 });
 
+// Logic for the mobile.html page
 if (window.location.pathname.endsWith('/mobile.html')) {
     topNavigators.forEach(navigator => {
         navigator.style.backgroundColor = '#2874f0';
 
-        // Select all SVGs that should change color
         const svgsToColor = navigator.querySelectorAll('.header-icon');
         svgsToColor.forEach(svg => {
-            svg.style.stroke = 'white'; // Change SVG stroke color to white
+            svg.style.stroke = 'white';
         });
 
-        // Select all text elements that should change color
         const textToColor = navigator.querySelectorAll('.header-text');
         textToColor.forEach(text => {
-            text.style.color = 'white'; // Change text color to white
+            text.style.color = 'white';
         });
 
-        // Handle hover for the login section specifically
         const loginBack = navigator.querySelector('.login-back');
         if (loginBack) {
             const loginText = loginBack.querySelector('.header-text');
@@ -175,14 +179,39 @@ if (window.location.pathname.endsWith('/mobile.html')) {
             });
 
             loginBack.addEventListener('mouseleave', () => {
-                loginBack.style.backgroundColor = ''; // Reset to default or original
+                loginBack.style.backgroundColor = '';
                 if (loginText) {
-                    loginText.style.color = 'white'; // Reset text color
+                    loginText.style.color = 'white';
                 }
                 loginSvgs.forEach(svg => {
-                    svg.style.stroke = 'white'; // Reset SVG color
+                    svg.style.stroke = 'white';
                 });
             });
         }
+    });
+}
+
+// for the checkout page
+if (window.location.pathname.endsWith('/checkout.html')) {
+    topNavigators.forEach(navigator => {
+        // Set background color for the header on checkout page
+        navigator.style.backgroundColor = '#2874f0';
+
+        // Hide elements with 'remove-at-checkout'
+        const elementsToHide = navigator.querySelectorAll('.remove-at-checkout');
+        elementsToHide.forEach(element => {
+            element.style.display = 'none';
+        });
+
+        // Show and center the search bar
+        const searchBar = navigator.querySelector('.search-bar-main');
+        if (searchBar) {
+            searchBar.style.margin = '0 auto'; // Center it horizontally
+            searchBar.style.flexGrow = '1'; // Allow it to take available space
+            searchBar.style.maxWidth = '600px'; // Give it a reasonable max-width
+
+        }
+
+       
     });
 }
