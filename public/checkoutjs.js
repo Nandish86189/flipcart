@@ -55,6 +55,9 @@ document.querySelectorAll('.remove-cart-item').forEach((link)=>{
         // console.log(cart);
         const container=document.querySelector(`.cart-item-${productId}`);
         container.remove();
+
+
+        console.log(cart); // gives only in the cart
     });
 });
 
