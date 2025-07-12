@@ -25,7 +25,7 @@ export function show(){
     });
 }
 
-  import {cart,addtocart} from './cart.js';
+  import {cart,addtocart,saveCart} from './cart.js';
   import {products} from './productsdata.js';
 
 
@@ -97,7 +97,7 @@ products.forEach((product) => {
 
 
 
-function updatecartquantity(){
+export function updatecartquantity(){
 
   // updating cart value at cart svg
 
@@ -106,9 +106,10 @@ function updatecartquantity(){
           cart.forEach((item)=>{
             cartquantity+=item.quantity;
 
-          })
+          });
 
     document.querySelector('.cart-quantity').innerHTML=cartquantity;  
+    saveCart();
 
     // console.log(cartquantity);
     // console.log(cart);
@@ -132,3 +133,5 @@ document.querySelectorAll('.add-to-cart').forEach((button)=>{
   });
 
 });
+
+    updatecartquantity();

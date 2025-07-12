@@ -18,19 +18,20 @@
     <header class="sticky top-0 z-50 w-full bg-white flex items-center justify-between p-4 shadow-md top-navigator">
     </header>
 
-    <section class="bg-gray-100 min-h-screen py-2 px-1 sm:px-2 md:px-3 lg:px-4">
+    <section class="bg-gray-100 min-h-screen py-2 px-1 sm:px-2 md:px-3 lg:px-4 ">
         <div class="max-w-full mx-auto flex flex-col lg:flex-row gap-4">
 
             <div class="flex-1 space-y-4 added-to-bill">
                 <div class="bg-white p-4 shadow-sm rounded-sm">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-semibold text-gray-700">From Saved Addresses</h2>
+                        <h2 class="text-lg font-semibold text-gray-700  ">From Saved Addresses</h2>
                         <button class="text-blue-600 font-medium text-sm hover:underline">Enter Delivery Pincode</button>
                     </div>
                     <p class="text-gray-500 text-sm">No saved address found. Please enter a pincode.</p>
+                    <div class="order-summary"></div>
                 </div>
 
-                <div class="order-summary space-y-4"> 
+                <div class="order-not-found space-y-4"> 
                     </div>
 
                 <div class="bg-white p-4 shadow-sm rounded-sm flex justify-end">
@@ -64,6 +65,10 @@
             </div>
         </div>
     </section>
+
+  <div id="notification" class="fixed top-5 right-5 bg-red-600 text-white px-4 py-2 rounded shadow-md hidden z-50">
+  Item removed from cart
+</div>
 
     <script type="module" src="navigator.js"></script>
     <script type="module" src="checkoutjs.js"></script>

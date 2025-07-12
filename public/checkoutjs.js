@@ -1,5 +1,24 @@
-import { cart ,removefromcart } from "./cart.js";
-import{products} from "./productsdata.js";
+import { cart, removefromcart, updateQuantity } from "./cart.js"; // Assuming you'll add updateQuantity to cart.js
+import { products } from "./productsdata.js";
+
+const orderSummaryContainer = document.querySelector('.order-not-found'); // Assuming this is your main cart display container
+
+function rerender(){
+    if (cart.length === 0) {
+    // If the cart is empty, render the 'empty cart' message
+    const emptyCartHtml = `
+        <div class="text-center py-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">Your Cart is Empty!</h2>
+            <p class="text-gray-500">Looks like you haven't added anything to your cart yet.</p>
+            <a href="index.html" class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">Start Shopping</a>
+        </div>
+    `;
+    orderSummaryContainer.innerHTML = emptyCartHtml;
+}
+}
+
+rerender();  //CHCECKING if iitialyy empty or not 
+
 
 let cartsummary = '';
 
@@ -13,7 +32,9 @@ cart.forEach((item) => {
         }
     });
 
-    // console.log(mactchproduct);
+    // Use the quantity from the cart item
+    const itemQuantity = item.quantity;
+
     cartsummary += `
         <div class="bg-white p-4 shadow-sm rounded-sm cart-item-${mactchproduct.id}">
             <div class="flex flex-col sm:flex-row items-start mb-6 border-b pb-4 last:border-b-0">
@@ -31,12 +52,12 @@ cart.forEach((item) => {
                     <p class="text-gray-700 text-sm mt-1 small-text">Delivery by ${mactchproduct.date}</p>
                     <div class="flex items-center justify-between mt-4">
                         <div class="flex items-center space-x-2">
-                            <button class="border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center text-lg font-medium text-gray-600">-</button>
-                            <span class="border border-gray-300 px-3 py-1 rounded text-sm">1</span>
-                            <button class="border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center text-lg font-medium text-gray-600">+</button>
+                            <button class="border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center text-lg font-medium text-gray-600 item-decrease" data-product-id="${mactchproduct.id}">-</button>
+                            <span class="border border-gray-300 px-3 py-1 rounded text-sm actual-increase">${itemQuantity}</span>
+                            <button class="border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center text-lg font-medium text-gray-600 item-increase" data-product-id="${mactchproduct.id}">+</button>
                         </div>
                         <div class="flex space-x-4 text-sm font-semibold">
-                            <button class="text-gray-700 hover:text-blue-600 small-text remove-cart-item " data-product-id=${mactchproduct.id}>REMOVE</button>
+                            <button class="text-gray-700 hover:text-blue-600 small-text remove-cart-item" data-product-id=${mactchproduct.id}>REMOVE</button>
                         </div>
                     </div>
                 </div>
@@ -46,19 +67,71 @@ cart.forEach((item) => {
 });
 
 document.querySelector('.order-summary').innerHTML = cartsummary;
-// console.log(cartsummary);
 
-document.querySelectorAll('.remove-cart-item').forEach((link)=>{
-    link.addEventListener('click',()=>{
-        const productId=link.dataset.productId;
+
+
+
+document.querySelectorAll('.remove-cart-item').forEach((link) => {
+    link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
         removefromcart(productId);
-        // console.log(cart);
-        const container=document.querySelector(`.cart-item-${productId}`);
+
+        rerender();  // after removing each product cecking empty or not 
+
+        const container = document.querySelector(`.cart-item-${productId}`);
         container.remove();
 
 
-        console.log(cart); // gives only in the cart
+
+
+
+        let removedName = 'Unknown Product';
+        products.forEach((product) => {
+            if (product.id === productId) {
+                removedName = product.name;
+            }
+        });
+
+        const notification = document.getElementById('notification');
+        notification.textContent = `Item "${removedName}" has been removed from the cart.`;
+        notification.classList.remove('hidden');
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 5000);
     });
 });
+
+document.querySelectorAll('.item-increase').forEach((button) => {
+    button.addEventListener('click', () => {
+        const productId = button.dataset.productId; // Get the product ID
+        const quantityElement = button.closest('div').querySelector('.actual-increase');
+        let currentQuantity = parseInt(quantityElement.innerHTML); 
+
+        currentQuantity += 1;
+        quantityElement.innerHTML = currentQuantity;
+
+        updateQuantity(productId, currentQuantity); // Call a function in cart.js to update and save
+    });
+});
+
+document.querySelectorAll('.item-decrease').forEach((button) => {
+    button.addEventListener('click', () => {
+        const productId = button.dataset.productId; // Get the product ID
+        const quantityElement = button.closest('div').querySelector('.actual-increase');
+        let currentQuantity = parseInt(quantityElement.innerHTML);
+
+        if (currentQuantity > 1) {
+            currentQuantity -= 1;
+            quantityElement.innerHTML = currentQuantity;
+
+            updateQuantity(productId, currentQuantity); // Call a function in cart.js to update and save
+        }
+    });
+});
+
+console.log(cart);
+
+
+
 
 
