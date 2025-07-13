@@ -1880,6 +1880,16 @@
       }
     }
   }
+  .md\:top-0 {
+    @media (width >= 48rem) {
+      top: calc(var(--spacing) * 0);
+    }
+  }
+  .md\:top-8 {
+    @media (width >= 48rem) {
+      top: calc(var(--spacing) * 8);
+    }
+  }
   .md\:left-0 {
     @media (width >= 48rem) {
       left: calc(var(--spacing) * 0);
@@ -1888,6 +1898,16 @@
   .md\:mt-\[199px\] {
     @media (width >= 48rem) {
       margin-top: 199px;
+    }
+  }
+  .md\:mb-5 {
+    @media (width >= 48rem) {
+      margin-bottom: calc(var(--spacing) * 5);
+    }
+  }
+  .md\:mb-9 {
+    @media (width >= 48rem) {
+      margin-bottom: calc(var(--spacing) * 9);
     }
   }
   .md\:ml-36 {

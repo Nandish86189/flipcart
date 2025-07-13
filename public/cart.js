@@ -17,7 +17,8 @@ export function addtocart(productId) {
     } else {
         cart.push({
             productId: productId,
-            quantity: 1 // Default quantity when first added
+            quantity: 1 ,// Default quantity when first added
+            deliveryoptionId: '1'
         });
     }
     saveCart(); // Save cart after adding
@@ -31,6 +32,7 @@ export function removefromcart(productId) {
         }
     });
     cart = newCart;
+
     saveCart(); // Save cart after removing
 }
 
