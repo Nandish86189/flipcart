@@ -1,85 +1,79 @@
-// checkout.js
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-
-import { cart, removefromcart, updateQuantity } from "./cart.js";
+import { cart, removefromcart, saveCart, updateQuantity } from "./cart.js";
 import { products } from "./productsdata.js";
+import { deliveryOptions } from './deliveryoption.js';
 
-// Define the delivery options data directly in checkout.js
-const deliveryOptions = [{
-    id: '1',
-    deliverydays: 7, // 7 days from today
-    pricecents: 0
-}, {
-    id: '2',
-    deliverydays: 3, // 3 days from today
-    pricecents: 45
-}, {
-    id: '3',
-    deliverydays: 1, // 1 day from today
-    pricecents: 65
-}];
+const orderSummaryContainer = document.querySelector('.order-summary');
 
-
-const orderSummaryContainer = document.querySelector('.order-summary'); // Make sure your HTML has a div with class "order-summary"
-
-function renderCheckoutPage() { // Renamed from rerender for clarity and consistency
+function rerender() {
     if (cart.length === 0) {
         const emptyCartHtml = `
-            <div class="text-center py-8">
+            <div class="text-center py-8 ">
                 <h2 class="text-xl font-semibold text-gray-700 mb-2">Your Cart is Empty!</h2>
                 <p class="text-gray-500">Looks like you haven't added anything to your cart yet.</p>
                 <a href="index.html" class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">Start Shopping</a>
             </div>
         `;
         orderSummaryContainer.innerHTML = emptyCartHtml;
-        return; // Exit the function if cart is empty
+        return;
     }
 
-    let cartsummaryHTML = ''; // Renamed for clarity
+    let cartsummary = '';
 
-    cart.forEach((item) => {
+    cart.forEach((item) => { // 'item' is the current cart item
         const productId = item.productId;
-        // Use find for cleaner product matching
-        const mactchproduct = products.find(product => product.id === productId);
+        let mactchproduct;
 
+        products.forEach((product) => {
+            if (product.id === productId) {
+                mactchproduct = product;
+            }
+        });
+
+        // If no product matches (e.g., product was deleted), skip this cart item
         if (!mactchproduct) {
-            console.warn(`Product with ID ${productId} not found in productsdata. Skipping item.`);
-            return; // Skip this item if no product data is found
+            console.warn(`Product with ID ${productId} not found in products data.`);
+            return; // Skip to the next item in the cart
         }
 
         const itemQuantity = item.quantity;
 
-        // --- START: Dynamic Delivery Options for this product ---
+        // --- Start of Delivery Date Logic (Corrected) ---
+        const selectedDeliveryOption = deliveryOptions.find(option => option.id === item.deliveryOptionsId);
+        const dateString = selectedDeliveryOption
+            ? dayjs().add(selectedDeliveryOption.deliverydays, 'days').format('dddd, MMMM D')
+            : 'Select a delivery option'; // Default text if no option is selected/found for the item's deliveryOptionId
+        // --- End of Delivery Date Logic (Corrected) ---
+
+
+        // Delivery options HTML for the radio buttons
         let deliveryhtml = '';
         deliveryOptions.forEach((option) => {
-            
             const today = dayjs();
             const deliveryDate = today.add(option.deliverydays, 'days');
-            const datestring = deliveryDate.format('dddd, MMMM D'); // e.g., "Tuesday, July 20"
-            const dayName = deliveryDate.format('dddd'); // e.g., "Tuesday"
+            const optionDatestring = deliveryDate.format('dddd, MMMM D'); // Renamed to avoid conflict
+            // Format price: divide by 100 to convert cents to dollars/rupees, then format
+            const pricestring = option.pricecents === 0 ? 'FREE' : `${option.pricecents}`;
 
-            const pricestring = option.pricecents === 0 ? 'FREE' : option.pricecents;
 
-            // Set the first option as checked by default for each product
-            const isChecked = option.id === '1' ? 'checked' : '';
+            // Check if this is the selected option for this product
+            const isChecked = item.deliveryOptionsId === option.id ? 'checked' : '';
 
             deliveryhtml += `
-                <label class="flex items-center border border-gray-200 rounded p-2 mb-2 cursor-pointer hover:border-blue-400 peer-checked:border-blue-400 peer-checked:bg-blue-50">
+                <label class="flex items-center border border-gray-200 rounded p-2 mb-2 cursor-pointer hover:border-blue-400 peer-checked:border-blue-400 peer-checked:bg-blue-50 delivery-option" data-product-id="${mactchproduct.id}" data-delivery-option-id="${option.id}">
                     <input type="radio" name="deliveryOption-${mactchproduct.id}" value="${option.id}" class="hidden peer" ${isChecked}>
                     <span class="w-4 h-4 border-2 border-gray-300 rounded-full mr-2 relative peer-checked:border-blue-400 peer-checked:after:content-[''] peer-checked:after:bg-blue-400 peer-checked:after:rounded-full peer-checked:after:absolute peer-checked:after:top-1/2 peer-checked:after:left-1/2 peer-checked:after:transform peer-checked:after:-translate-x-1/2 peer-checked:after:-translate-y-1/2 peer-checked:after:w-2 peer-checked:after:h-2"></span>
-                    <span class="ml-3">${datestring}</span>
-                    <span class="text-sm font-medium text-green-500 ml-auto">${pricestring}</span>
+                    <span class="ml-3">${optionDatestring}</span>
+                    <span class="text-sm font-medium text-green-600 ml-auto">${pricestring}</span>
                 </label>
             `;
         });
-        // --- END: Dynamic Delivery Options for this product ---
 
-
-        cartsummaryHTML += `
+        cartsummary += `
             <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
                 <div class="bg-white p-4 shadow-sm rounded-sm cart-item-${mactchproduct.id}">
+                    <div class="text-green-600 font-medium mb-2">Delivery date: ${dateString}</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 items-start">
-
                         <div class="flex flex-col">
                             <div class="flex flex-col sm:flex-row items-start border-b pb-4 sm:border-b-0 sm:pb-0">
                                 <img src="${mactchproduct.image}" alt="${mactchproduct.name}" class="w-24 h-24 object-contain mr-4 mb-2 sm:mb-0">
@@ -114,82 +108,90 @@ function renderCheckoutPage() { // Renamed from rerender for clarity and consist
                                 ${deliveryhtml}
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         `;
     });
 
-    orderSummaryContainer.innerHTML = cartsummaryHTML;
+    orderSummaryContainer.innerHTML = cartsummary;
 
-    // Attach event listeners after HTML is rendered
-    attachEventListeners();
-}
-
-function attachEventListeners() {
+    // Attach event listeners
     document.querySelectorAll('.remove-cart-item').forEach((link) => {
         link.addEventListener('click', () => {
             const productId = link.dataset.productId;
             removefromcart(productId);
-            renderCheckoutPage(); // Re-render the entire page to reflect changes
+            rerender();
 
             let removedName = 'Unknown Product';
-            const removedProduct = products.find(product => product.id === productId);
-            if (removedProduct) {
-                removedName = removedProduct.name;
-            }
+            products.forEach((product) => {
+                if (product.id === productId) {
+                    removedName = product.name;
+                }
+            });
 
             const notification = document.getElementById('notification');
-            notification.textContent = `Item "${removedName}" has been removed from the cart.`;
-            notification.classList.remove('hidden');
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 5000);
+            if (notification) { // Ensure notification element exists
+                notification.textContent = `Item "${removedName}" has been removed from the cart.`;
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 5000);
+            }
         });
     });
 
     document.querySelectorAll('.item-increase').forEach((button) => {
         button.addEventListener('click', () => {
             const productId = button.dataset.productId;
-            const quantityElement = button.closest('div').querySelector('.actual-increase');
-            let currentQuantity = parseInt(quantityElement.innerHTML);
-
-            currentQuantity += 1;
-            quantityElement.innerHTML = currentQuantity;
-
-            updateQuantity(productId, currentQuantity);
+            // Find the item in the cart to get its current quantity
+            const cartItem = cart.find(item => item.productId === productId);
+            if (cartItem) {
+                const newQuantity = cartItem.quantity + 1;
+                updateQuantity(productId, newQuantity);
+                rerender();
+            }
         });
     });
 
     document.querySelectorAll('.item-decrease').forEach((button) => {
         button.addEventListener('click', () => {
             const productId = button.dataset.productId;
-            const quantityElement = button.closest('div').querySelector('.actual-increase');
-            let currentQuantity = parseInt(quantityElement.innerHTML);
-
-            if (currentQuantity > 1) {
-                currentQuantity -= 1;
-                quantityElement.innerHTML = currentQuantity;
-                updateQuantity(productId, currentQuantity);
+            // Find the item in the cart to get its current quantity
+            const cartItem = cart.find(item => item.productId === productId);
+            if (cartItem && cartItem.quantity > 1) {
+                const newQuantity = cartItem.quantity - 1;
+                updateQuantity(productId, newQuantity);
+                rerender();
             }
         });
     });
 
-    // You might also want to add event listeners for the delivery options radio buttons
-    // if you plan to save the selected delivery option to the cart.
-    // Example (simplified):
-    document.querySelectorAll(`input[type="radio"][name^="deliveryOption-"]`).forEach((radio) => {
-        radio.addEventListener('change', (event) => {
-            const productId = event.target.dataset.productId;
-            const selectedOptionId = event.target.value;
-            console.log(`Product ${productId}: Selected delivery option ${selectedOptionId}`);
-            // Here you would typically save this selection to your cart data in localStorage
-            // e.g., updateCartDeliveryOption(productId, selectedOptionId);
+    // Delivery option selection handler
+    document.querySelectorAll('.delivery-option').forEach((element) => {
+        // Use 'change' event on the radio button itself for better reliability
+        element.querySelector('input[type="radio"]').addEventListener('change', (event) => {
+            const productId = element.dataset.productId;
+            const deliveryOptionId = event.target.value; // Get value from the changed radio button
+            updateDeliveryOption(productId, deliveryOptionId);
+            rerender();
         });
     });
 }
 
-// Initial render when the page loads
-renderCheckoutPage();
+function updateDeliveryOption(productId, deliveryOptionId) {
+    let matchingItem;
 
-console.log(cart);
+    cart.forEach((item) => {
+        if (productId === item.productId) {
+            matchingItem = item;
+        }
+    });
+
+    if (matchingItem) {
+        matchingItem.deliveryOptionsId = deliveryOptionId;
+        saveCart();
+    }
+}
+
+rerender();
