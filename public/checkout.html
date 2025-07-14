@@ -13,6 +13,11 @@
             backdrop-filter: blur(3px);
             -webkit-backdrop-filter: blur(3px);
         }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 
@@ -28,6 +33,7 @@
                 <div class="bg-white p-4 shadow-sm rounded-sm">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-lg font-semibold text-gray-700">Delivery Information</h2>
+                        <button class="bg-blue-500 text-white text-sm px-4 py-2 rounded-sm hover:bg-blue-600 enter-pincode-btn">Edit Info</button>
                     </div>
                     <p class="text-gray-500 text-sm mb-2">Name: <span class="delivery-username font-medium text-gray-700">Not set</span></p>
                     <p class="text-gray-500 text-sm mb-2">Pincode: <span class="delivery-pincode font-medium text-gray-700">Not set</span></p>
@@ -81,6 +87,35 @@
         </div>
     </div>
 
+    <div id="delivery-info-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 modal-backdrop hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-auto overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Enter Delivery Information</h3>
+                <form id="delivery-info-form" class="space-y-4">
+                    <div>
+                        <label for="delivery-name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                        <input type="text" id="delivery-name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <p id="name-error" class="error-message hidden">Please enter your name.</p>
+                    </div>
+                    <div>
+                        <label for="delivery-pincode" class="block text-gray-700 text-sm font-bold mb-2">Pincode:</label>
+                        <input type="text" id="delivery-pincode" name="pincode" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" maxlength="6" pattern="[0-9]{6}" title="Please enter a 6-digit pin code" required>
+                        <p id="pincode-error" class="error-message hidden">Please enter a valid 6-digit pin code (numbers only).</p>
+                    </div>
+                    <div>
+                        <label for="delivery-address" class="block text-gray-700 text-sm font-bold mb-2">Delivery Address:</label>
+                        <textarea id="delivery-address" name="address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24" required></textarea>
+                        <p id="address-error" class="error-message hidden">Please enter your delivery address.</p>
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" id="cancel-delivery-info" class="bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md hover:bg-gray-400">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white font-medium py-2 px-4 rounded-md hover:bg-blue-600">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="navigator.js"></script>
     <script type="module" src="checkoutjs.js"></script>
 
@@ -115,6 +150,18 @@
         const addedtobillsection = document.querySelector('.added-to-bill'); 
         const paymentsummarysection = document.querySelector('.payment-summary-section');
 
+        // New elements for the delivery information modal
+        const deliveryinfomodal = document.getElementById('delivery-info-modal');
+        const deliveryinfoform = document.getElementById('delivery-info-form');
+        const deliverynameinput = document.getElementById('delivery-name');
+        const deliverypincodeinput = document.getElementById('delivery-pincode');
+        const deliveryaddressinput = document.getElementById('delivery-address');
+        const canceldeliveryinfobutton = document.getElementById('cancel-delivery-info');
+
+        const nameError = document.getElementById('name-error');
+        const pincodeError = document.getElementById('pincode-error');
+        const addressError = document.getElementById('address-error');
+
         function updatedeliveryinfodisplay() {
             usernamedisplay.textContent = username || 'Not set'; 
             pincodedisplay.textContent = pin || 'Not set';
@@ -124,51 +171,67 @@
         updatedeliveryinfodisplay(); 
         
         enterpincodebtn.addEventListener('click', () => {
-            const tempusername = window.prompt('Please enter your name:');
-            if (tempusername === null) {
-                alert('Name entry cancelled.');
-                return;
-            }
-            if (tempusername.trim().length === 0) {
-                alert('Please enter a valid name.');
-                return;
-            }
-            username = tempusername.trim();
-
-            const temppin = window.prompt('Please enter your pin code:');
-            
-            if (temppin === null) {
-                alert('Pin code entry cancelled.');
-                return;
-            }
-
-            if (isNaN(temppin) || temppin.trim().length < 6) { 
-                alert('Please enter a valid pin code (numbers only, at least 6 digits).');
-                return;
-            }
-            
-            const tempaddress = window.prompt('Please enter your delivery address:');
-
-            if (tempaddress === null) {
-                alert('Address entry cancelled.');
-                return;
-            }
-            
-            if (tempaddress.trim().length === 0) {
-                alert('Please enter a valid address.');
-                return;
-            }
-
-            pin = temppin;
-            address = tempaddress;
-            updatedeliveryinfodisplay(); 
-            alert('Delivery information updated successfully!');
+            // Populate form with existing data if available
+            deliverynameinput.value = username;
+            deliverypincodeinput.value = pin;
+            deliveryaddressinput.value = address;
+            deliveryinfomodal.classList.remove('hidden');
             orderconfirmationsection.classList.add('hidden');
+            // Hide any previous error messages
+            nameError.classList.add('hidden');
+            pincodeError.classList.add('hidden');
+            addressError.classList.add('hidden');
+        });
+
+        deliveryinfoform.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const tempusername = deliverynameinput.value.trim();
+            const temppin = deliverypincodeinput.value.trim();
+            const tempaddress = deliveryaddressinput.value.trim();
+
+            let isValid = true;
+
+            // Name validation
+            if (tempusername.length === 0) {
+                nameError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                nameError.classList.add('hidden');
+            }
+
+            // Pincode validation
+            if (isNaN(temppin) || temppin.length !== 6) { 
+                pincodeError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                pincodeError.classList.add('hidden');
+            }
+            
+            // Address validation
+            if (tempaddress.length === 0) {
+                addressError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                addressError.classList.add('hidden');
+            }
+
+            if (isValid) {
+                username = tempusername;
+                pin = temppin;
+                address = tempaddress;
+                updatedeliveryinfodisplay(); 
+                deliveryinfomodal.classList.add('hidden'); // Hide the modal
+            }
+        });
+
+        canceldeliveryinfobutton.addEventListener('click', () => {
+            deliveryinfomodal.classList.add('hidden');
         });
 
         placeorderbtn.addEventListener('click', () => {
             if (!username || !pin || !address) {
-                alert('Please enter your name, pin code, and address before placing the order.');
+                // If delivery info is not set, open the modal for input
                 enterpincodebtn.click(); 
             } else {
                 codconfirmationmodal.classList.remove('hidden');
