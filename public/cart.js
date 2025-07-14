@@ -28,7 +28,7 @@ export function removefromcart(productId) {
     const newCart = [];
     cart.forEach((cartItem) => {
         if (cartItem.productId !== productId) {
-            newCart.push(cartItem);
+            newCart.push(cartItem);                           //if the product in cart is not equal to the removing roduct id then had to cart 
         }
     });
     cart = newCart;
@@ -41,7 +41,7 @@ export function updateQuantity(productId, newQuantity) {
     let foundItem = false;
     cart.forEach((item) => {
         if (item.productId === productId) {
-            item.quantity = newQuantity;
+            item.quantity = newQuantity;                   //takes the increased quantity and adds new quantity
             foundItem = true;
         }
     });
